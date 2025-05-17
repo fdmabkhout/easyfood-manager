@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyFood Manager - التقارير والإحصائيات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- استيراد خدمة الطباعة -->
+    <script src="print-service.js"></script>
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --primary-dark: #5D2906;
+            --primary-light: #A05D2E;
+            --secondary-color: #4caf50;
+            --info-color: #2196f3;
+            --background-dark: #121212;
+            --background-paper: #1e1e1e;
+            --border-color: #333;
+            --border-radius: 12px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--background-dark);
+            color: white;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-bar {
+            background-color: var(--primary-color);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-right: auto;
+            margin-left: 15px;
+        }
+
+        #user-name {
+            font-weight: 500;
+            color: white;
+        }
+
+        .logout-button {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logout-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .print-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .print-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .reports-container {
+            padding: 20px;
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+        }
+
+        .header-section {
+            margin-bottom: 30px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            color: #aaa;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--background-paper);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-title {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            color: var(--secondary-color);
+        }
+
+        .chart-container {
+            background-color: var(--background-paper);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chart-period {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .chart {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .chart-bar {
+            width: 30px;
+            background-color: var(--primary-color);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+        }
+
+        .chart-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: white;
+        }
+
+        .table-container {
+            background-color: var(--background-paper);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            text-align: right;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-chip {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .status-completed {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-pending {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+
+        .status-cancelled {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #2d2d2d;
+            border-radius: var(--border-radius);
+        }
+
+        .chart-placeholder i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .chart-placeholder p {
+            color: #aaa;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            background-color: #333;
+            border: 1px solid var(--border-color);
+            border-radius: 4px 0 0 4px;
+            color: white;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            width: 250px;
+        }
+
+        .search-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .action-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .view-button {
+            color: var(--info-color);
+        }
+
+        .view-button:hover {
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+
+        .print-button-small {
+            color: var(--primary-color);
+        }
+
+        .print-button-small:hover {
+            background-color: rgba(139, 69, 19, 0.1);
+        }
+
+        .delete-button {
+            color: #f44336;
+        }
+
+        .delete-button:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-bar">
+        <div style="display: flex; align-items: center;">
+            <button class="back-button" onclick="window.location.href='index-static.html'">←</button>
+            <div class="app-title">التقارير والإحصائيات</div>
+        </div>
+        <div class="user-info">
+            <span id="user-name">مستخدم</span>
+            <button class="logout-button" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
+        </div>
+        <button class="print-button" onclick="printReport()">
+            <i class="fas fa-print"></i> طباعة التقرير
+        </button>
+    </div>
+
+    <div class="reports-container">
+        <div class="header-section">
+            <h1 class="header-title">لوحة التحكم</h1>
+            <p class="header-subtitle">إحصائيات وتقارير المبيعات</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('overview')">نظرة عامة</div>
+            <div class="tab" onclick="showTab('sales')">المبيعات</div>
+            <div class="tab" onclick="showTab('meals')">الوجبات</div>
+            <div class="tab" onclick="showTab('orders')">سجل الطلبات</div>
+        </div>
+
+        <!-- قسم نظرة عامة -->
+        <div id="overview-tab" class="tab-content active">
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-title">إجمالي المبيعات اليوم</div>
+                    <div class="stat-value">12,500 دج</div>
+                    <div class="stat-change">+15% مقارنة بالأمس</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">عدد الطلبات</div>
+                    <div class="stat-value">42</div>
+                    <div class="stat-change">+8% مقارنة بالأمس</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">متوسط قيمة الطلب</div>
+                    <div class="stat-value">297.62 دج</div>
+                    <div class="stat-change">+5% مقارنة بالأمس</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">الوجبة الأكثر طلباً</div>
+                    <div class="stat-value">شاورما دجاج</div>
+                    <div class="stat-change">15 طلب</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">المبيعات الأسبوعية</div>
+                    <div class="chart-period">آخر 7 أيام</div>
+                </div>
+
+                <div class="chart">
+                    <div class="chart-bar" style="height: 60%;">
+                        <div class="chart-bar-value">9500 دج</div>
+                        <div class="chart-bar-label">السبت</div>
+                    </div>
+                    <div class="chart-bar" style="height: 75%;">
+                        <div class="chart-bar-value">11,800 دج</div>
+                        <div class="chart-bar-label">الأحد</div>
+                    </div>
+                    <div class="chart-bar" style="height: 45%;">
+                        <div class="chart-bar-value">7200 دج</div>
+                        <div class="chart-bar-label">الإثنين</div>
+                    </div>
+                    <div class="chart-bar" style="height: 55%;">
+                        <div class="chart-bar-value">8700 دج</div>
+                        <div class="chart-bar-label">الثلاثاء</div>
+                    </div>
+                    <div class="chart-bar" style="height: 65%;">
+                        <div class="chart-bar-value">10,200 دج</div>
+                        <div class="chart-bar-label">الأربعاء</div>
+                    </div>
+                    <div class="chart-bar" style="height: 70%;">
+                        <div class="chart-bar-value">11,000 دج</div>
+                        <div class="chart-bar-label">الخميس</div>
+                    </div>
+                    <div class="chart-bar" style="height: 80%;">
+                        <div class="chart-bar-value">12,500 دج</div>
+                        <div class="chart-bar-label">الجمعة</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">آخر الطلبات</div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>الزبون</th>
+                            <th>الوقت</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#18</td>
+                            <td>محمد</td>
+                            <td>12:45 م</td>
+                            <td>850 دج</td>
+                            <td><span class="status-chip status-completed">مكتمل</span></td>
+                        </tr>
+                        <tr>
+                            <td>#17</td>
+                            <td>أحمد</td>
+                            <td>12:30 م</td>
+                            <td>400 دج</td>
+                            <td><span class="status-chip status-completed">مكتمل</span></td>
+                        </tr>
+                        <tr>
+                            <td>#16</td>
+                            <td>سارة</td>
+                            <td>12:15 م</td>
+                            <td>550 دج</td>
+                            <td><span class="status-chip status-completed">مكتمل</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- قسم المبيعات -->
+        <div id="sales-tab" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">تحليل المبيعات</div>
+                    <div class="chart-period">
+                        <select class="filter-select" onchange="updateSalesChart()">
+                            <option value="week">هذا الأسبوع</option>
+                            <option value="month">هذا الشهر</option>
+                            <option value="year">هذا العام</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="chart-placeholder">
+                    <i class="fas fa-chart-line"></i>
+                    <p>رسم بياني للمبيعات حسب الفترة</p>
+                </div>
+            </div>
+
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-title">إجمالي المبيعات</div>
+                    <div class="stat-value">87,500 دج</div>
+                    <div class="stat-change">+12% مقارنة بالفترة السابقة</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">عدد الطلبات</div>
+                    <div class="stat-value">294</div>
+                    <div class="stat-change">+8% مقارنة بالفترة السابقة</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">متوسط قيمة الطلب</div>
+                    <div class="stat-value">297.62 دج</div>
+                    <div class="stat-change">+5% مقارنة بالفترة السابقة</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">أعلى يوم مبيعات</div>
+                    <div class="stat-value">الجمعة</div>
+                    <div class="stat-change">12,500 دج</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">تفاصيل المبيعات اليومية</div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>اليوم</th>
+                            <th>عدد الطلبات</th>
+                            <th>إجمالي المبيعات</th>
+                            <th>متوسط قيمة الطلب</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>السبت</td>
+                            <td>38</td>
+                            <td>9,500 دج</td>
+                            <td>250 دج</td>
+                        </tr>
+                        <tr>
+                            <td>الأحد</td>
+                            <td>47</td>
+                            <td>11,800 دج</td>
+                            <td>251.06 دج</td>
+                        </tr>
+                        <tr>
+                            <td>الإثنين</td>
+                            <td>29</td>
+                            <td>7,200 دج</td>
+                            <td>248.28 دج</td>
+                        </tr>
+                        <tr>
+                            <td>الثلاثاء</td>
+                            <td>35</td>
+                            <td>8,700 دج</td>
+                            <td>248.57 دج</td>
+                        </tr>
+                        <tr>
+                            <td>الأربعاء</td>
+                            <td>41</td>
+                            <td>10,200 دج</td>
+                            <td>248.78 دج</td>
+                        </tr>
+                        <tr>
+                            <td>الخميس</td>
+                            <td>44</td>
+                            <td>11,000 دج</td>
+                            <td>250 دج</td>
+                        </tr>
+                        <tr>
+                            <td>الجمعة</td>
+                            <td>50</td>
+                            <td>12,500 دج</td>
+                            <td>250 دج</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- قسم الوجبات -->
+        <div id="meals-tab" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">الوجبات الأكثر مبيعاً</div>
+                    <div class="chart-period">
+                        <select class="filter-select" onchange="updateMealsChart()">
+                            <option value="week">هذا الأسبوع</option>
+                            <option value="month">هذا الشهر</option>
+                            <option value="year">هذا العام</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="chart-placeholder">
+                    <i class="fas fa-chart-pie"></i>
+                    <p>رسم بياني للوجبات الأكثر مبيعاً</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">تفاصيل مبيعات الوجبات</div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>الوجبة</th>
+                            <th>الفئة</th>
+                            <th>عدد المبيعات</th>
+                            <th>إجمالي المبيعات</th>
+                            <th>النسبة من المبيعات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>شاورما دجاج</td>
+                            <td>ساندويتشات</td>
+                            <td>85</td>
+                            <td>29,750 دج</td>
+                            <td>34%</td>
+                        </tr>
+                        <tr>
+                            <td>برجر لحم</td>
+                            <td>ساندويتشات</td>
+                            <td>65</td>
+                            <td>29,250 دج</td>
+                            <td>33.4%</td>
+                        </tr>
+                        <tr>
+                            <td>شاورما لحم</td>
+                            <td>ساندويتشات</td>
+                            <td>45</td>
+                            <td>18,000 دج</td>
+                            <td>20.6%</td>
+                        </tr>
+                        <tr>
+                            <td>عصير برتقال</td>
+                            <td>مشروبات</td>
+                            <td>40</td>
+                            <td>8,000 دج</td>
+                            <td>9.1%</td>
+                        </tr>
+                        <tr>
+                            <td>مياه معدنية</td>
+                            <td>مشروبات</td>
+                            <td>30</td>
+                            <td>2,400 دج</td>
+                            <td>2.7%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- قسم سجل الطلبات -->
+        <div id="orders-tab" class="tab-content">
+            <div class="filter-container">
+                <select class="filter-select" id="order-status-filter" onchange="filterOrders()">
+                    <option value="all">جميع الحالات</option>
+                    <option value="completed">مكتمل</option>
+                    <option value="pending">قيد التحضير</option>
+                    <option value="cancelled">ملغي</option>
+                </select>
+
+                <select class="filter-select" id="order-date-filter" onchange="filterOrders()">
+                    <option value="today">اليوم</option>
+                    <option value="yesterday">الأمس</option>
+                    <option value="week">هذا الأسبوع</option>
+                    <option value="month">هذا الشهر</option>
+                </select>
+
+                <div class="search-container">
+                    <input type="text" id="order-search" class="search-input" placeholder="بحث برقم الطلب أو اسم الزبون..." onkeyup="filterOrders()">
+                    <button class="search-button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">سجل الطلبات</div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>التاريخ والوقت</th>
+                            <th>اسم الزبون</th>
+                            <th>الكاشير</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#1001</td>
+                            <td>2023/10/15 10:30</td>
+                            <td>أحمد محمد</td>
+                            <td>محمد</td>
+                            <td>450 دج</td>
+                            <td><span class="status-chip status-completed">مكتمل</span></td>
+                            <td>
+                                <button class="action-button view-button" onclick="viewOrder(1001)"><i class="fas fa-eye"></i></button>
+                                <button class="action-button print-button-small" onclick="printOrderReceipt(1001)"><i class="fas fa-print"></i></button>
+                                <button class="action-button delete-button" onclick="deleteOrder(1001)"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#1002</td>
+                            <td>2023/10/15 11:15</td>
+                            <td>فاطمة علي</td>
+                            <td>أحمد</td>
+                            <td>650 دج</td>
+                            <td><span class="status-chip status-completed">مكتمل</span></td>
+                            <td>
+                                <button class="action-button view-button" onclick="viewOrder(1002)"><i class="fas fa-eye"></i></button>
+                                <button class="action-button print-button-small" onclick="printOrderReceipt(1002)"><i class="fas fa-print"></i></button>
+                                <button class="action-button delete-button" onclick="deleteOrder(1002)"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#1003</td>
+                            <td>2023/10/15 12:45</td>
+                            <td>محمود حسن</td>
+                            <td>فاطمة</td>
+                            <td>350 دج</td>
+                            <td><span class="status-chip status-pending">قيد التحضير</span></td>
+                            <td>
+                                <button class="action-button view-button" onclick="viewOrder(1003)"><i class="fas fa-eye"></i></button>
+                                <button class="action-button print-button-small" onclick="printOrderReceipt(1003)"><i class="fas fa-print"></i></button>
+                                <button class="action-button delete-button" onclick="deleteOrder(1003)"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#1004</td>
+                            <td>2023/10/15 13:20</td>
+                            <td>سارة أحمد</td>
+                            <td>محمد</td>
+                            <td>800 دج</td>
+                            <td><span class="status-chip status-pending">قيد التحضير</span></td>
+                            <td>
+                                <button class="action-button view-button" onclick="viewOrder(1004)"><i class="fas fa-eye"></i></button>
+                                <button class="action-button print-button-small" onclick="printOrderReceipt(1004)"><i class="fas fa-print"></i></button>
+                                <button class="action-button delete-button" onclick="deleteOrder(1004)"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#1005</td>
+                            <td>2023/10/15 14:10</td>
+                            <td>خالد محمد</td>
+                            <td>أحمد</td>
+                            <td>550 دج</td>
+                            <td><span class="status-chip status-cancelled">ملغي</span></td>
+                            <td>
+                                <button class="action-button view-button" onclick="viewOrder(1005)"><i class="fas fa-eye"></i></button>
+                                <button class="action-button print-button-small" onclick="printOrderReceipt(1005)"><i class="fas fa-print"></i></button>
+                                <button class="action-button delete-button" onclick="deleteOrder(1005)"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // التحقق من تسجيل الدخول
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('currentUser');
+
+            if (!currentUser) {
+                // إذا لم يكن المستخدم مسجل الدخول، توجيهه إلى صفحة تسجيل الدخول
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+
+            // التحقق من نوع المستخدم (فقط المدير يمكنه الوصول إلى التقارير)
+            if (user.type !== 'admin') {
+                alert('ليس لديك صلاحية للوصول إلى هذه الصفحة');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // عرض اسم المستخدم في الواجهة
+            document.getElementById('user-name').textContent = user.fullName;
+        });
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // عرض التبويب المحدد
+        function showTab(tabId) {
+            // إخفاء جميع التبويبات
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // إظهار التبويب المحدد
+            document.getElementById(tabId + '-tab').classList.add('active');
+
+            // تحديث حالة أزرار التبويب
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('onclick').includes(tabId)) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        // تحديث رسم بياني المبيعات
+        function updateSalesChart() {
+            // في التطبيق الحقيقي، سنقوم بتحديث الرسم البياني بناءً على الفترة المحددة
+            console.log('تحديث رسم بياني المبيعات');
+        }
+
+        // تحديث رسم بياني الوجبات
+        function updateMealsChart() {
+            // في التطبيق الحقيقي، سنقوم بتحديث الرسم البياني بناءً على الفترة المحددة
+            console.log('تحديث رسم بياني الوجبات');
+        }
+
+        // تصفية الطلبات
+        function filterOrders() {
+            const statusFilter = document.getElementById('order-status-filter').value;
+            const dateFilter = document.getElementById('order-date-filter').value;
+            const searchText = document.getElementById('order-search').value.toLowerCase();
+
+            // في التطبيق الحقيقي، سنقوم بتصفية الطلبات بناءً على المرشحات
+            console.log(`تصفية الطلبات: الحالة=${statusFilter}, التاريخ=${dateFilter}, البحث=${searchText}`);
+        }
+
+        // عرض تفاصيل الطلب
+        function viewOrder(orderId) {
+            // في التطبيق الحقيقي، سنقوم بعرض تفاصيل الطلب في نافذة منبثقة
+            alert(`عرض تفاصيل الطلب رقم ${orderId}`);
+        }
+
+        // طباعة فاتورة الطلب
+        function printOrderReceipt(orderId) {
+            // في التطبيق الحقيقي، سنقوم بطباعة فاتورة الطلب
+            alert(`طباعة فاتورة الطلب رقم ${orderId}`);
+        }
+
+        // حذف الطلب
+        function deleteOrder(orderId) {
+            if (confirm(`هل أنت متأكد من رغبتك في حذف الطلب رقم ${orderId}؟`)) {
+                // في التطبيق الحقيقي، سنقوم بحذف الطلب من قاعدة البيانات
+                alert(`تم حذف الطلب رقم ${orderId} بنجاح`);
+
+                // إزالة الصف من الجدول
+                const orderRows = document.querySelectorAll('.table tbody tr');
+                orderRows.forEach(row => {
+                    if (row.querySelector('td').textContent === `#${orderId}`) {
+                        row.remove();
+                    }
+                });
+            }
+        }
+
+        // طباعة التقرير
+        function printReport() {
+            try {
+                console.log('بدء طباعة التقرير...');
+
+                // الحصول على المرشحات المحددة
+                const dateFilter = document.getElementById('date-filter').value;
+                const cashierFilter = document.getElementById('cashier-filter').value;
+
+                // إنشاء محتوى التقرير
+                const reportContent = generateReportContent(dateFilter, cashierFilter);
+
+                // تكوين الطابعة
+                const printer = {
+                    name: 'طابعة الكاشير',
+                    id: 1,
+                    description: 'طابعة الفواتير والتقارير'
+                };
+
+                // خيارات الطباعة
+                const printOptions = {
+                    autoPrint: true,
+                    maxRetries: 3
+                };
+
+                // فتح نافذة الطباعة مع تحديد الطابعة
+                const printResult = openPrintWindow(reportContent, 'تقرير المبيعات', true, printer);
+
+                if (printResult) {
+                    console.log('تم إرسال التقرير للطباعة بنجاح');
+
+                    // التحقق مما إذا تم استخدام الطريقة البديلة
+                    if (printResult.fallback) {
+                        console.log('تم استخدام الطريقة البديلة لطباعة التقرير');
+                    }
+                } else {
+                    console.error('فشل في فتح نافذة طباعة التقرير');
+                    alert('حدث خطأ أثناء طباعة التقرير. يرجى المحاولة مرة أخرى.');
+
+                    // محاولة استخدام طريقة بديلة للطباعة
+                    try {
+                        console.log('محاولة استخدام طريقة بديلة للطباعة بعد الخطأ...');
+
+                        if (useFallbackPrintMethod(reportContent, 'تقرير المبيعات', printer)) {
+                            console.log('تم استخدام الطريقة البديلة بنجاح بعد الخطأ');
+                            alert('تم استخدام طريقة بديلة للطباعة. يرجى التحقق من نافذة الطباعة.');
+                        } else {
+                            alert('فشلت جميع محاولات الطباعة. يرجى التحقق من إعدادات الطابعة والمحاولة مرة أخرى.');
+                        }
+                    } catch (fallbackError) {
+                        console.error('فشل في استخدام الطريقة البديلة للطباعة:', fallbackError);
+                    }
+                }
+            } catch (error) {
+                console.error('خطأ أثناء طباعة التقرير:', error);
+                alert('حدث خطأ أثناء طباعة التقرير. يرجى المحاولة مرة أخرى.');
+            }
+        }
+
+        // إنشاء محتوى التقرير
+        function generateReportContent(dateFilter, cashierFilter) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ar-SA', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // الحصول على عنوان التقرير بناءً على المرشحات
+            let reportTitle = 'تقرير المبيعات';
+            let reportPeriod = '';
+
+            switch (dateFilter) {
+                case 'today':
+                    reportPeriod = 'اليوم';
+                    break;
+                case 'yesterday':
+                    reportPeriod = 'الأمس';
+                    break;
+                case 'week':
+                    reportPeriod = 'هذا الأسبوع';
+                    break;
+                case 'month':
+                    reportPeriod = 'هذا الشهر';
+                    break;
+                default:
+                    reportPeriod = 'الفترة المحددة';
+            }
+
+            // إضافة اسم الكاشير إلى عنوان التقرير إذا تم تحديده
+            let cashierName = '';
+            if (cashierFilter !== 'all') {
+                cashierName = cashierFilter;
+                reportTitle += ` (${cashierName})`;
+            }
+
+            return `
+                <div class="report-container">
+                    <div class="report-header">
+                        <img src="https://b.top4top.io/p_339723os71.jpg" alt="EasyFood Manager Logo">
+                        <div class="report-title">EasyFood Manager</div>
+                        <div class="report-subtitle">نظام إدارة المطعم</div>
+                    </div>
+
+                    <div class="report-info">
+                        <h1>${reportTitle}</h1>
+                        <p>الفترة: ${reportPeriod}</p>
+                        <p>تاريخ التقرير: ${dateStr}</p>
+                        ${cashierName ? `<p>الكاشير: ${cashierName}</p>` : ''}
+                    </div>
+
+                    <div class="report-summary">
+                        <h2>ملخص المبيعات</h2>
+                        <div class="report-stats">
+                            <div class="report-stat">
+                                <div class="stat-label">إجمالي المبيعات</div>
+                                <div class="stat-value">12,500 دج</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="stat-label">عدد الطلبات</div>
+                                <div class="stat-value">42</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="stat-label">متوسط قيمة الطلب</div>
+                                <div class="stat-value">297.62 دج</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-details">
+                        <h2>تفاصيل الطلبات</h2>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>التاريخ والوقت</th>
+                                    <th>اسم الزبون</th>
+                                    <th>الكاشير</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#1001</td>
+                                    <td>2023/10/15 10:30</td>
+                                    <td>أحمد محمد</td>
+                                    <td>محمد</td>
+                                    <td>450 دج</td>
+                                    <td>مكتمل</td>
+                                </tr>
+                                <tr>
+                                    <td>#1002</td>
+                                    <td>2023/10/15 11:15</td>
+                                    <td>فاطمة علي</td>
+                                    <td>أحمد</td>
+                                    <td>650 دج</td>
+                                    <td>مكتمل</td>
+                                </tr>
+                                <tr>
+                                    <td>#1003</td>
+                                    <td>2023/10/15 12:45</td>
+                                    <td>محمود حسن</td>
+                                    <td>فاطمة</td>
+                                    <td>350 دج</td>
+                                    <td>قيد التحضير</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-footer">
+                        <p>EasyFood Manager &copy; ${now.getFullYear()} | جميع الحقوق محفوظة</p>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

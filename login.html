@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAHADA FOOD - تسجيل الدخول</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --primary-dark: #5D2906;
+            --primary-light: #A05D2E;
+            --secondary-color: #4caf50;
+            --background-dark: #121212;
+            --background-paper: #1e1e1e;
+            --border-color: #333;
+            --border-radius: 12px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            background-color: var(--background-dark);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--background-paper);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+        }
+
+        .login-header h1 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #333;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #333;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            transition: var(--transition);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+            background-size: 16px;
+        }
+
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-button:active {
+            transform: translateY(-1px);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="https://b.top4top.io/p_339723os71.jpg" alt="MAHADA FOOD Logo">
+            <h1>MAHADA FOOD</h1>
+            <p>نظام إدارة المطعم</p>
+        </div>
+
+        <div id="error-message" class="error-message">
+            اسم المستخدم أو كلمة المرور غير صحيحة
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="user-type">نوع المستخدم</label>
+                <select id="user-type" required>
+                    <option value="cashier">كاشير</option>
+                    <option value="kitchen">طباخ</option>
+                    <option value="admin">مدير</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="username">اسم المستخدم</label>
+                <input type="text" id="username" placeholder="أدخل اسم المستخدم" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+            </div>
+
+            <button type="submit" class="login-button">
+                <i class="fas fa-sign-in-alt"></i>
+                تسجيل الدخول
+            </button>
+        </form>
+
+        <div class="login-footer">
+            MAHADA FOOD &copy; 2023 | جميع الحقوق محفوظة
+        </div>
+    </div>
+
+    <script>
+        // قاعدة بيانات المستخدمين (في التطبيق الحقيقي، يجب أن تكون في الخادم)
+        const users = [
+            { username: 'محمد', password: '1234', type: 'cashier', fullName: 'محمد أحمد' },
+            { username: 'أحمد', password: '1234', type: 'cashier', fullName: 'أحمد محمود' },
+            { username: 'فاطمة', password: '1234', type: 'cashier', fullName: 'فاطمة علي' },
+            { username: 'علي', password: '1234', type: 'kitchen', fullName: 'علي حسن' },
+            { username: 'خالد', password: '1234', type: 'kitchen', fullName: 'خالد محمد' },
+            { username: 'admin', password: 'admin', type: 'admin', fullName: 'مدير النظام' }
+        ];
+        // التحقق من تسجيل الدخول
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            try {
+                // الحصول على قيم الحقول
+                const userTypeElement = document.getElementById('user-type');
+                const usernameElement = document.getElementById('username');
+                const passwordElement = document.getElementById('password');
+
+                if (!userTypeElement || !usernameElement || !passwordElement) {
+                    throw new Error('لم يتم العثور على عناصر النموذج');
+                }
+
+                const userType = userTypeElement.value;
+                const username = usernameElement.value;
+                const password = passwordElement.value;
+
+                // التحقق من القيم
+                if (!username || !password) {
+                    showError('يرجى إدخال اسم المستخدم وكلمة المرور');
+                    return;
+                }
+
+                // البحث عن المستخدم
+                const user = users.find(u =>
+                    u.username === username &&
+                    u.password === password &&
+                    u.type === userType
+                );
+
+                if (user) {
+                    // تخزين معلومات المستخدم في التخزين المحلي
+                    try {
+                        localStorage.setItem('currentUser', JSON.stringify({
+                            username: user.username,
+                            fullName: user.fullName,
+                            type: user.type
+                        }));
+
+                        console.log('تم تسجيل الدخول بنجاح:', user.username);
+
+                        // توجيه المستخدم إلى الصفحة المناسبة
+                        let redirectUrl = 'index-static.html'; // الصفحة الافتراضية
+
+                        if (user.type === 'cashier') {
+                            redirectUrl = 'cashier-static.html';
+                        } else if (user.type === 'kitchen') {
+                            redirectUrl = 'kitchen-static.html';
+                        } else if (user.type === 'admin') {
+                            redirectUrl = 'index-static.html';
+                        }
+
+                        // إظهار رسالة نجاح قبل التوجيه
+                        showSuccess(`مرحباً ${user.fullName}، جاري توجيهك...`);
+
+                        // توجيه المستخدم بعد فترة قصيرة
+                        setTimeout(() => {
+                            window.location.href = redirectUrl;
+                        }, 1000);
+                    } catch (storageError) {
+                        console.error('خطأ في تخزين بيانات المستخدم:', storageError);
+                        showError('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+                    }
+                } else {
+                    // عرض رسالة الخطأ
+                    showError('اسم المستخدم أو كلمة المرور أو نوع المستخدم غير صحيح');
+                }
+            } catch (error) {
+                console.error('خطأ أثناء تسجيل الدخول:', error);
+                showError('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+            }
+        });
+
+        // عرض رسالة خطأ
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+
+                // إضافة تأثير الاهتزاز
+                const loginContainer = document.querySelector('.login-container');
+                if (loginContainer) {
+                    loginContainer.classList.add('shake');
+
+                    // إزالة تأثير الاهتزاز بعد انتهاء الرسوم المتحركة
+                    setTimeout(() => {
+                        loginContainer.classList.remove('shake');
+                    }, 500);
+                }
+            }
+        }
+
+        // عرض رسالة نجاح
+        function showSuccess(message) {
+            // إنشاء عنصر رسالة النجاح إذا لم يكن موجوداً
+            let successMessage = document.getElementById('success-message');
+
+            if (!successMessage) {
+                successMessage = document.createElement('div');
+                successMessage.id = 'success-message';
+                successMessage.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+                successMessage.style.color = '#4caf50';
+                successMessage.style.padding = '10px';
+                successMessage.style.borderRadius = '8px';
+                successMessage.style.marginBottom = '20px';
+                successMessage.style.animation = 'fadeIn 0.3s ease-out';
+
+                // إضافة العنصر قبل النموذج
+                const form = document.getElementById('login-form');
+                if (form) {
+                    form.parentNode.insertBefore(successMessage, form);
+                }
+            }
+
+            // تعيين النص وإظهار الرسالة
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+
+            // إخفاء رسالة الخطأ إذا كانت ظاهرة
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        }
+
+        // التحقق مما إذا كان المستخدم مسجل الدخول بالفعل
+        window.addEventListener('load', function() {
+            try {
+                const currentUser = localStorage.getItem('currentUser');
+
+                if (currentUser) {
+                    try {
+                        const user = JSON.parse(currentUser);
+
+                        // التحقق من صحة بيانات المستخدم
+                        if (!user || !user.username || !user.type) {
+                            console.warn('بيانات المستخدم غير صالحة، إعادة تعيين حالة تسجيل الدخول');
+                            localStorage.removeItem('currentUser');
+                            return;
+                        }
+
+                        console.log('المستخدم مسجل الدخول بالفعل:', user.username);
+
+                        // توجيه المستخدم إلى الصفحة المناسبة
+                        let redirectUrl = 'index-static.html'; // الصفحة الافتراضية
+
+                        if (user.type === 'cashier') {
+                            redirectUrl = 'cashier-static.html';
+                        } else if (user.type === 'kitchen') {
+                            redirectUrl = 'kitchen-static.html';
+                        } else if (user.type === 'admin') {
+                            redirectUrl = 'index-static.html';
+                        }
+
+                        // التحقق مما إذا كان المستخدم بالفعل في الصفحة المناسبة
+                        const currentPath = window.location.pathname;
+                        const currentPage = currentPath.substring(currentPath.lastIndexOf('/') + 1);
+
+                        if (currentPage !== redirectUrl) {
+                            console.log(`توجيه المستخدم من ${currentPage} إلى ${redirectUrl}`);
+                            window.location.href = redirectUrl;
+                        }
+                    } catch (parseError) {
+                        console.error('خطأ في تحليل بيانات المستخدم:', parseError);
+                        localStorage.removeItem('currentUser');
+                    }
+                } else {
+                    console.log('المستخدم غير مسجل الدخول');
+                }
+            } catch (error) {
+                console.error('خطأ أثناء التحقق من حالة تسجيل الدخول:', error);
+            }
+        });
+
+        // إضافة مستمع للأخطاء العامة
+        window.addEventListener('error', function(event) {
+            console.error('خطأ غير معالج:', event.error);
+        });
+    </script>
+</body>
+</html>

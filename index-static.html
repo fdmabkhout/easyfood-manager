@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAHADA FOOD - نظام إدارة المطعم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1 {
+            color: #ff9800;
+            margin-bottom: 20px;
+        }
+        .card-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .card {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            width: 200px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            background-color: #3d3d3d;
+        }
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff9800;
+        }
+        .card-description {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #user-name {
+            font-weight: 500;
+            color: #ddd;
+        }
+
+        .logout-button {
+            background-color: transparent;
+            color: #ddd;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logout-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="user-info">
+        <span id="user-name">مستخدم</span>
+        <button class="logout-button" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
+    </div>
+
+    <div class="container">
+        <h1>MAHADA FOOD</h1>
+        <p>نظام إدارة المطعم</p>
+
+        <div class="card-container">
+            <div class="card" onclick="window.location.href='cashier-static.html'">
+                <div class="card-icon">🍽️</div>
+                <div class="card-title">واجهة الموظف</div>
+                <div class="card-description">إدخال الطلبات، إدارة المبيعات، وطباعة الفواتير</div>
+            </div>
+
+            <div class="card" onclick="window.location.href='kitchen-static.html'">
+                <div class="card-icon">👨‍🍳</div>
+                <div class="card-title">واجهة المطبخ</div>
+                <div class="card-description">عرض الطلبات الجديدة، تحديث حالة الطلبات</div>
+            </div>
+
+            <div class="card" onclick="window.location.href='reports-static.html'">
+                <div class="card-icon">📊</div>
+                <div class="card-title">التقارير والإحصائيات</div>
+                <div class="card-description">عرض تقارير المبيعات، الإحصائيات، وسجل الطلبات</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // التحقق من تسجيل الدخول
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('currentUser');
+
+            if (!currentUser) {
+                // إذا لم يكن المستخدم مسجل الدخول، توجيهه إلى صفحة تسجيل الدخول
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+
+            // عرض اسم المستخدم في الواجهة
+            document.getElementById('user-name').textContent = user.fullName;
+        });
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

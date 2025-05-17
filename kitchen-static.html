@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAHADA FOOD - واجهة المطبخ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="print-service.js"></script>
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --primary-dark: #5D2906;
+            --primary-light: #A05D2E;
+            --secondary-color: #4caf50;
+            --background-dark: #121212;
+            --background-paper: #1e1e1e;
+            --border-color: #333;
+            --border-radius: 12px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--background-dark);
+            color: white;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-bar {
+            background-color: var(--primary-color);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-right: auto;
+            margin-left: 15px;
+        }
+
+        #user-name {
+            font-weight: 500;
+            color: white;
+        }
+
+        .logout-button {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logout-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .refresh-button {
+            background: none;
+            border: 1px solid white;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .kitchen-container {
+            padding: 20px;
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+        }
+
+        .header-section {
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            color: #aaa;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .order-card {
+            background-color: var(--background-paper);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .order-card.urgent {
+            border-right: 4px solid #f44336;
+        }
+
+        .order-card.normal {
+            border-right: 4px solid var(--secondary-color);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .order-number {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .time-chip {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .order-time {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .order-cashier {
+            color: var(--primary-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 10px 0;
+        }
+
+        .order-items {
+            margin: 10px 0;
+        }
+
+        .order-item {
+            padding: 6px 0;
+        }
+
+        .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .order-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .ready-button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ready-button:hover {
+            background-color: #3d9140;
+            transform: translateY(-2px);
+        }
+
+        .print-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .print-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .priority-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .priority-high {
+            background-color: #f44336;
+        }
+
+        .priority-normal {
+            background-color: var(--secondary-color);
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 40px 0;
+            color: #aaa;
+        }
+
+        .empty-orders-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty-orders-subtitle {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-bar">
+        <div style="display: flex; align-items: center;">
+            <button class="back-button" onclick="window.location.href='index-static.html'">←</button>
+            <div class="app-title">MAHADA FOOD - واجهة المطبخ</div>
+        </div>
+        <div class="user-info">
+            <span id="user-name">مستخدم</span>
+            <button class="logout-button" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
+        </div>
+        <button class="refresh-button" onclick="refreshOrders()">تحديث</button>
+    </div>
+
+    <div class="kitchen-container">
+        <div class="header-section">
+            <h1 class="header-title">الطلبات الحالية</h1>
+            <p class="header-subtitle">3 طلبات في انتظار التحضير</p>
+        </div>
+
+        <div class="orders-grid">
+            <div class="order-card urgent">
+                <div class="priority-badge priority-high">عاجل</div>
+                <div class="order-header">
+                    <div class="order-number">طلب #17</div>
+                    <div class="time-chip">⏱️ 5 دقيقة</div>
+                </div>
+
+                <div class="order-time">12:30 م</div>
+                <div class="order-cashier">الكاشير: محمد</div>
+
+                <div class="divider"></div>
+
+                <div class="order-items">
+                    <div class="order-item">شاورما دجاج × 1</div>
+                    <div class="order-item">عصير برتقال × 1</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="order-actions">
+                    <button class="print-button" onclick="printKitchenOrderById(17)">
+                        <i class="fas fa-print"></i> طباعة
+                    </button>
+                    <button class="ready-button" onclick="markAsReady(17)">
+                        <i class="fas fa-check"></i> تم التحضير
+                    </button>
+                </div>
+            </div>
+
+            <div class="order-card normal">
+                <div class="priority-badge priority-normal">عادي</div>
+                <div class="order-header">
+                    <div class="order-number">طلب #18</div>
+                    <div class="time-chip">⏱️ الآن</div>
+                </div>
+
+                <div class="order-time">12:45 م</div>
+                <div class="order-cashier">الكاشير: أحمد</div>
+
+                <div class="divider"></div>
+
+                <div class="order-items">
+                    <div class="order-item">برجر لحم × 2</div>
+                    <div class="order-item">مياه معدنية × 2</div>
+                    <div class="order-item">كنافة × 1</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="order-actions">
+                    <button class="print-button" onclick="printKitchenOrderById(18)">
+                        <i class="fas fa-print"></i> طباعة
+                    </button>
+                    <button class="ready-button" onclick="markAsReady(18)">
+                        <i class="fas fa-check"></i> تم التحضير
+                    </button>
+                </div>
+            </div>
+
+            <div class="order-card normal">
+                <div class="priority-badge priority-normal">عادي</div>
+                <div class="order-header">
+                    <div class="order-number">طلب #19</div>
+                    <div class="time-chip">⏱️ الآن</div>
+                </div>
+
+                <div class="order-time">13:05 م</div>
+                <div class="order-cashier">الكاشير: فاطمة</div>
+
+                <div class="divider"></div>
+
+                <div class="order-items">
+                    <div class="order-item">شاورما لحم × 1</div>
+                    <div class="order-item">بطاطس × 1</div>
+                    <div class="order-item">كولا × 2</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="order-actions">
+                    <button class="print-button" onclick="printKitchenOrderById(19)">
+                        <i class="fas fa-print"></i> طباعة
+                    </button>
+                    <button class="ready-button" onclick="markAsReady(19)">
+                        <i class="fas fa-check"></i> تم التحضير
+                    </button>
+                </div>
+            </div>
+
+            <!-- هذا القسم سيظهر عندما لا توجد طلبات -->
+            <div class="empty-orders" style="display: none;">
+                <div class="empty-orders-title">لا توجد طلبات في انتظار التحضير</div>
+                <div class="empty-orders-subtitle">ستظهر الطلبات الجديدة هنا تلقائياً</div>
+            </div>
+        </div>
+    </div>
+    <!-- استيراد خدمة الطباعة وخدمة الطلبات -->
+    <script src="print-service.js"></script>
+    <script src="order-service.js"></script>
+
+    <script>
+        // التحقق من تسجيل الدخول وتحديث الطلبات
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('currentUser');
+
+            if (!currentUser) {
+                // إذا لم يكن المستخدم مسجل الدخول، توجيهه إلى صفحة تسجيل الدخول
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+
+            // التحقق من نوع المستخدم
+            if (user.type !== 'kitchen' && user.type !== 'admin') {
+                alert('ليس لديك صلاحية للوصول إلى هذه الصفحة');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // عرض اسم المستخدم في الواجهة
+            document.getElementById('user-name').textContent = user.fullName;
+
+            // تحديث الطلبات عند تحميل الصفحة
+            refreshOrders();
+
+            // تحديث الطلبات كل 30 ثانية
+            setInterval(refreshOrders, 30000);
+        });
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // تحديث الطلبات
+        function refreshOrders() {
+            try {
+                console.log('جاري تحديث الطلبات...');
+
+                // الحصول على الطلبات المعلقة من التخزين المحلي
+                const pendingOrders = getPendingOrders();
+
+                // تحديث عدد الطلبات في العنوان
+                document.querySelector('.header-subtitle').textContent = `${pendingOrders.length} طلبات في انتظار التحضير`;
+
+                // الحصول على حاوية الطلبات
+                const ordersGrid = document.querySelector('.orders-grid');
+
+                // مسح الطلبات الحالية (باستثناء رسالة "لا توجد طلبات")
+                const orderCards = document.querySelectorAll('.order-card');
+                orderCards.forEach(card => card.remove());
+
+                // إظهار أو إخفاء رسالة "لا توجد طلبات"
+                const emptyOrdersMessage = document.querySelector('.empty-orders');
+
+                if (pendingOrders.length === 0) {
+                    // إظهار رسالة "لا توجد طلبات"
+                    emptyOrdersMessage.style.display = 'block';
+                } else {
+                    // إخفاء رسالة "لا توجد طلبات"
+                    emptyOrdersMessage.style.display = 'none';
+
+                    // إنشاء بطاقات الطلبات الجديدة
+                    pendingOrders.forEach(order => {
+                        // حساب الوقت المنقضي
+                        const createdAt = new Date(order.createdAt);
+                        const now = new Date();
+                        const elapsedMinutes = Math.floor((now - createdAt) / (1000 * 60));
+
+                        // تحديد أولوية الطلب (عاجل إذا كان قد مر أكثر من 10 دقائق)
+                        const isPriority = elapsedMinutes >= 10;
+
+                        // إنشاء بطاقة الطلب
+                        const orderCard = document.createElement('div');
+                        orderCard.className = `order-card ${isPriority ? 'urgent' : 'normal'}`;
+
+                        // تنسيق الوقت
+                        const timeStr = createdAt.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+
+                        // تنسيق الوقت المنقضي
+                        let elapsedTimeStr = '';
+                        if (elapsedMinutes < 1) {
+                            elapsedTimeStr = 'الآن';
+                        } else if (elapsedMinutes === 1) {
+                            elapsedTimeStr = 'دقيقة واحدة';
+                        } else if (elapsedMinutes < 60) {
+                            elapsedTimeStr = `${elapsedMinutes} دقيقة`;
+                        } else {
+                            const hours = Math.floor(elapsedMinutes / 60);
+                            const remainingMinutes = elapsedMinutes % 60;
+                            elapsedTimeStr = `${hours} ساعة`;
+                            if (remainingMinutes > 0) {
+                                elapsedTimeStr += ` و ${remainingMinutes} دقيقة`;
+                            }
+                        }
+
+                        // إنشاء محتوى بطاقة الطلب
+                        orderCard.innerHTML = `
+                            <div class="priority-badge ${isPriority ? 'priority-high' : 'priority-normal'}">
+                                ${isPriority ? 'عاجل' : 'عادي'}
+                            </div>
+                            <div class="order-header">
+                                <div class="order-number">طلب #${order.orderNumber}</div>
+                                <div class="time-chip">⏱️ ${elapsedTimeStr}</div>
+                            </div>
+
+                            <div class="order-time">${timeStr}</div>
+                            <div class="order-cashier">الكاشير: ${order.employee || 'غير معروف'}</div>
+
+                            <div class="divider"></div>
+
+                            <div class="order-items">
+                                ${order.items.map(item => `<div class="order-item">${item.name} × ${item.quantity}</div>`).join('')}
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="order-actions">
+                                <button class="print-button" onclick="printKitchenOrderById(parseInt('${order.orderNumber}'))">
+                                    <i class="fas fa-print"></i> طباعة
+                                </button>
+                                <button class="ready-button" onclick="markAsReady('${order.id}')">
+                                    <i class="fas fa-check"></i> تم التحضير
+                                </button>
+                            </div>
+                        `;
+
+                        // إضافة بطاقة الطلب إلى الشبكة
+                        ordersGrid.insertBefore(orderCard, emptyOrdersMessage);
+                    });
+                }
+
+                console.log('تم تحديث الطلبات بنجاح');
+            } catch (error) {
+                console.error('خطأ أثناء تحديث الطلبات:', error);
+                alert('حدث خطأ أثناء تحديث الطلبات. يرجى المحاولة مرة أخرى.');
+            }
+        }
+
+        // طباعة طلب المطبخ
+        function printKitchenOrderById(orderNumber) {
+            try {
+                console.log(`بدء طباعة طلب المطبخ رقم ${orderNumber}...`);
+
+                // البحث عن الطلب في قائمة الطلبات المعلقة
+                const pendingOrders = getPendingOrders();
+
+                // تحويل رقم الطلب إلى رقم صحيح للمقارنة
+                const orderNumberInt = parseInt(orderNumber);
+
+                // البحث عن الطلب باستخدام رقم الطلب
+                const order = pendingOrders.find(o => parseInt(o.orderNumber) === orderNumberInt);
+
+                if (!order) {
+                    console.error(`لم يتم العثور على الطلب رقم ${orderNumber}`);
+
+                    // محاولة استخدام وظيفة getOrderItems الاحتياطية
+                    const fallbackOrderData = getOrderItems(orderNumberInt);
+
+                    if (fallbackOrderData && fallbackOrderData.items && fallbackOrderData.items.length > 0) {
+                        // إنشاء كائن طلب احتياطي
+                        const fallbackOrder = {
+                            orderNumber: orderNumberInt,
+                            customerName: 'زبون',
+                            employee: fallbackOrderData.cashier,
+                            items: fallbackOrderData.items,
+                            createdAt: new Date().toISOString(),
+                            status: 'pending',
+                            id: `fallback-${Date.now()}`
+                        };
+
+                        // طباعة الطلب الاحتياطي
+                        printKitchenOrderFallback(fallbackOrder);
+                        return;
+                    }
+
+                    alert('لم يتم العثور على الطلب. يرجى تحديث الصفحة والمحاولة مرة أخرى.');
+                    return;
+                }
+
+                // تكوين الطابعة
+                const kitchenPrinter = {
+                    name: 'طابعة المطبخ',
+                    id: 2,
+                    description: 'طابعة طلبات المطبخ'
+                };
+
+                // خيارات الطباعة
+                const printOptions = {
+                    autoPrint: true,
+                    maxRetries: 3
+                };
+
+                // استخدام خدمة الطباعة لطباعة طلب المطبخ على طابعة المطبخ
+                const result = printKitchenOrder(order, kitchenPrinter, printOptions);
+
+                if (result) {
+                    console.log(`تمت طباعة الطلب رقم ${orderNumber} على طابعة المطبخ بنجاح`);
+
+                    // التحقق مما إذا تم استخدام الطريقة البديلة
+                    if (result.fallback) {
+                        console.log('تم استخدام الطريقة البديلة لطباعة طلب المطبخ');
+                    }
+                } else {
+                    console.error(`فشل في طباعة الطلب رقم ${orderNumber}`);
+                    // رسالة الخطأ ستظهر تلقائياً من خلال وظيفة الطباعة
+                }
+            } catch (error) {
+                console.error('خطأ أثناء طباعة طلب المطبخ:', error);
+                alert('حدث خطأ أثناء الطباعة. يرجى المحاولة مرة أخرى.');
+            }
+        }
+
+        // طباعة طلب المطبخ باستخدام البيانات الاحتياطية
+        function printKitchenOrderFallback(order) {
+            try {
+                console.log(`بدء طباعة طلب المطبخ الاحتياطي رقم ${order.orderNumber}...`);
+
+                // تكوين الطابعة
+                const kitchenPrinter = {
+                    name: 'طابعة المطبخ',
+                    id: 2,
+                    description: 'طابعة طلبات المطبخ'
+                };
+
+                // خيارات الطباعة
+                const printOptions = {
+                    autoPrint: true,
+                    maxRetries: 3
+                };
+
+                // استخدام خدمة الطباعة لطباعة طلب المطبخ على طابعة المطبخ
+                const result = printKitchenOrder(order, kitchenPrinter, printOptions);
+
+                if (result) {
+                    console.log(`تمت طباعة الطلب الاحتياطي رقم ${order.orderNumber} على طابعة المطبخ بنجاح`);
+
+                    // التحقق مما إذا تم استخدام الطريقة البديلة
+                    if (result.fallback) {
+                        console.log('تم استخدام الطريقة البديلة لطباعة طلب المطبخ');
+                    }
+
+                    alert(`تمت طباعة الطلب رقم ${order.orderNumber} بنجاح باستخدام البيانات الاحتياطية`);
+                } else {
+                    console.error(`فشل في طباعة الطلب الاحتياطي رقم ${order.orderNumber}`);
+                    alert('فشل في طباعة الطلب. يرجى المحاولة مرة أخرى.');
+                }
+            } catch (error) {
+                console.error('خطأ أثناء طباعة طلب المطبخ الاحتياطي:', error);
+                alert('حدث خطأ أثناء الطباعة. يرجى المحاولة مرة أخرى.');
+            }
+        }
+
+        // تحديد الطلب كجاهز
+        function markAsReady(orderId) {
+            try {
+                console.log(`تحديد الطلب بمعرف ${orderId} كجاهز...`);
+
+                // التحقق مما إذا كان معرف الطلب يبدأ بـ "fallback-"
+                if (orderId.startsWith('fallback-')) {
+                    // استخراج رقم الطلب من معرف الطلب الاحتياطي
+                    const orderNumberElement = document.querySelector(`.ready-button[onclick*="${orderId}"]`)
+                        .closest('.order-card')
+                        .querySelector('.order-number');
+
+                    const orderNumberText = orderNumberElement ? orderNumberElement.textContent : '';
+                    const orderNumberMatch = orderNumberText.match(/#(\d+)/);
+                    const orderNumber = orderNumberMatch ? orderNumberMatch[1] : 'غير معروف';
+
+                    // إنشاء طلب احتياطي
+                    const fallbackOrder = {
+                        orderNumber: orderNumber,
+                        customerName: 'زبون',
+                        employee: 'موظف',
+                        items: [],
+                        createdAt: new Date().toISOString(),
+                        status: 'completed',
+                        id: orderId
+                    };
+
+                    // معالجة الطلب الاحتياطي
+                    handleReadyOrder(fallbackOrder, orderId);
+                    return;
+                }
+
+                // تحديث حالة الطلب في التخزين المحلي
+                const updatedOrder = updateOrderStatus(orderId, 'completed');
+
+                if (!updatedOrder) {
+                    console.error(`لم يتم العثور على الطلب بمعرف ${orderId}`);
+
+                    // البحث عن بطاقة الطلب في واجهة المستخدم
+                    const orderCard = findOrderCardById(orderId);
+
+                    if (orderCard) {
+                        // استخراج رقم الطلب من بطاقة الطلب
+                        const orderNumberElement = orderCard.querySelector('.order-number');
+                        const orderNumberText = orderNumberElement ? orderNumberElement.textContent : '';
+                        const orderNumberMatch = orderNumberText.match(/#(\d+)/);
+                        const orderNumber = orderNumberMatch ? orderNumberMatch[1] : 'غير معروف';
+
+                        // إنشاء طلب احتياطي
+                        const fallbackOrder = {
+                            orderNumber: orderNumber,
+                            customerName: 'زبون',
+                            employee: orderCard.querySelector('.order-cashier').textContent.replace('الكاشير: ', ''),
+                            items: Array.from(orderCard.querySelectorAll('.order-item')).map(item => {
+                                const itemText = item.textContent;
+                                const itemMatch = itemText.match(/(.*) × (\d+)/);
+                                return {
+                                    name: itemMatch ? itemMatch[1] : itemText,
+                                    quantity: itemMatch ? parseInt(itemMatch[2]) : 1,
+                                    price: 0
+                                };
+                            }),
+                            createdAt: new Date().toISOString(),
+                            status: 'completed',
+                            id: orderId
+                        };
+
+                        // معالجة الطلب الاحتياطي
+                        handleReadyOrder(fallbackOrder, orderId);
+                        return;
+                    }
+
+                    alert('لم يتم العثور على الطلب. يرجى تحديث الصفحة والمحاولة مرة أخرى.');
+                    return;
+                }
+
+                // معالجة الطلب المحدث
+                handleReadyOrder(updatedOrder, orderId);
+            } catch (error) {
+                console.error('خطأ أثناء تحديد الطلب كجاهز:', error);
+                alert('حدث خطأ أثناء تحديد الطلب كجاهز. يرجى المحاولة مرة أخرى.');
+            }
+        }
+
+        // البحث عن بطاقة الطلب باستخدام معرف الطلب
+        function findOrderCardById(orderId) {
+            const orderCards = document.querySelectorAll('.order-card');
+            for (let i = 0; i < orderCards.length; i++) {
+                const card = orderCards[i];
+                const readyButton = card.querySelector('.ready-button');
+
+                if (readyButton && readyButton.getAttribute('onclick').includes(orderId)) {
+                    return card;
+                }
+            }
+            return null;
+        }
+
+        // معالجة الطلب الجاهز
+        function handleReadyOrder(order, orderId) {
+            console.log(`تم تحديث حالة الطلب رقم ${order.orderNumber} إلى "مكتمل"`);
+
+            // تكوين الطابعة
+            const cashierPrinter = {
+                name: 'طابعة الكاشير',
+                id: 1,
+                description: 'طابعة الفواتير والتقارير'
+            };
+
+            // خيارات الطباعة
+            const printOptions = {
+                autoPrint: true,
+                maxRetries: 3
+            };
+
+            // طباعة إشعار للموظف على طابعة الكاشير
+            const result = printOrderReadyNotification(order, cashierPrinter, printOptions);
+
+            if (result) {
+                console.log(`تم إرسال إشعار جاهزية الطلب رقم ${order.orderNumber} للطباعة بنجاح`);
+
+                // التحقق مما إذا تم استخدام الطريقة البديلة
+                if (result.fallback) {
+                    console.log('تم استخدام الطريقة البديلة لطباعة إشعار جاهزية الطلب');
+                }
+            } else {
+                console.error(`فشل في طباعة إشعار جاهزية الطلب رقم ${order.orderNumber}`);
+            }
+
+            // البحث عن بطاقة الطلب وإزالتها من العرض
+            const orderCard = findOrderCardById(orderId);
+
+            if (orderCard) {
+                // تطبيق تأثير بصري قبل إزالة البطاقة
+                orderCard.style.opacity = '0.5';
+                orderCard.style.transform = 'scale(0.95)';
+
+                setTimeout(() => {
+                    // إزالة البطاقة من العرض
+                    orderCard.remove();
+
+                    // تحديث عدد الطلبات المتبقية
+                    const remainingOrders = document.querySelectorAll('.order-card').length;
+                    document.querySelector('.header-subtitle').textContent = `${remainingOrders} طلبات في انتظار التحضير`;
+
+                    // إظهار رسالة "لا توجد طلبات" إذا لم تكن هناك طلبات متبقية
+                    if (remainingOrders === 0) {
+                        document.querySelector('.empty-orders').style.display = 'block';
+                    }
+                }, 500);
+
+                alert(`تم تحضير الطلب رقم ${order.orderNumber} وإرسال إشعار للكاشير`);
+            } else {
+                console.error(`لم يتم العثور على بطاقة الطلب بمعرف ${orderId} في واجهة المستخدم`);
+                alert(`تم تحضير الطلب رقم ${order.orderNumber} وإرسال إشعار للكاشير، ولكن لم يتم العثور على بطاقة الطلب في واجهة المستخدم`);
+            }
+        }
+
+        // الحصول على عناصر الطلب
+        function getOrderItems(orderNumber) {
+            // في التطبيق الحقيقي، سنقوم بجلب عناصر الطلب من الخادم
+            // لكن في هذا النموذج، سنقوم بإرجاع بيانات ثابتة
+            if (orderNumber === 17) {
+                return {
+                    items: [
+                        { name: 'شاورما دجاج', quantity: 1, price: 350 },
+                        { name: 'عصير برتقال', quantity: 1, price: 200 }
+                    ],
+                    cashier: 'محمد'
+                };
+            } else if (orderNumber === 18) {
+                return {
+                    items: [
+                        { name: 'برجر لحم', quantity: 2, price: 450 },
+                        { name: 'مياه معدنية', quantity: 2, price: 80 },
+                        { name: 'كنافة', quantity: 1, price: 300 }
+                    ],
+                    cashier: 'أحمد'
+                };
+            } else if (orderNumber === 19) {
+                return {
+                    items: [
+                        { name: 'شاورما لحم', quantity: 1, price: 400 },
+                        { name: 'بطاطس', quantity: 1, price: 150 },
+                        { name: 'كولا', quantity: 2, price: 100 }
+                    ],
+                    cashier: 'فاطمة'
+                };
+            }
+            return { items: [], cashier: 'غير معروف' };
+        }
+    </script>
+</body>
+</html>
